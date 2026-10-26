@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>아들 결혼식 하객관리</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{
+  --bg:#faf7f2;--surface:#ffffff;--surface2:#f3eee6;--line:#e4dccf;--text:#2b2622;--muted:#7a6f64;
+  --accent:#b5485d;--accent-soft:#f6e3e6;--ok:#2f7d5b;--ok-soft:#e1f1e8;--warn:#b7791f;--warn-soft:#fbf0dc;
+  --info:#3563a8;--info-soft:#e3ebf7;--danger:#b23b3b;--shadow:0 1px 3px rgba(60,40,20,.08);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1b1917;--surface:#24211e;--surface2:#2d2925;--line:#3b3631;--text:#efe9e2;--muted:#a89c90;
+  --accent:#e07a8d;--accent-soft:#3d2a2e;--ok:#5cc08f;--ok-soft:#203229;--warn:#e0a84a;--warn-soft:#352c1c;
+  --info:#7aa5e6;--info-soft:#1f2a3a;--danger:#e57373;--shadow:none;color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#1b1917;--surface:#24211e;--surface2:#2d2925;--line:#3b3631;--text:#efe9e2;--muted:#a89c90;
+  --accent:#e07a8d;--accent-soft:#3d2a2e;--ok:#5cc08f;--ok-soft:#203229;--warn:#e0a84a;--warn-soft:#352c1c;
+  --info:#7aa5e6;--info-soft:#1f2a3a;--danger:#e57373;--shadow:none;color-scheme:dark;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic",sans-serif;-webkit-text-size-adjust:100%}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:12px;padding:12px 16px;max-width:1180px;margin:0 auto}
+.top h1{font-size:18px;margin:0;font-weight:700;letter-spacing:-.01em}
+.dday{background:var(--accent);color:#fff;border-radius:999px;padding:2px 10px;font-weight:700;font-size:13px;white-space:nowrap}
+.mode{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap}
+.mode b{color:var(--ok)}
+nav{display:flex;gap:4px;padding:0 12px 8px;max-width:1180px;margin:0 auto;overflow-x:auto;scrollbar-width:none}
+nav button{border:0;background:none;color:var(--muted);padding:7px 12px;border-radius:8px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
+nav button.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+main{max-width:1180px;margin:0 auto;padding:16px}
+h2{font-size:16px;margin:24px 0 10px}
+h2:first-child{margin-top:4px}
+.grid{display:grid;gap:12px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:var(--shadow)}
+.kpi .n{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2}
+.kpi .l{font-size:13px;color:var(--muted)}
+.kpi .s{font-size:12px;color:var(--muted)}
+.bar{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px}
+.legend span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px;background:var(--c)}
+.grp{display:grid;grid-template-columns:56px 1fr 74px;gap:10px;align-items:center;padding:6px 0;font-size:14px}
+.grp .r{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px}
+.todo-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+.todo-item:first-child{border-top:0}
+.todo-item .ic{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:15px;background:var(--surface2)}
+.todo-item .tx{flex:1;min-width:0}
+.todo-item .tx small{display:block;color:var(--muted)}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--text);padding:7px 12px;border-radius:8px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.btn:hover{border-color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn.ghost{border-color:transparent;background:none}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+input,select,textarea{font:inherit;font-size:14px;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.search{flex:1;min-width:180px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;font-size:13px;cursor:pointer;color:var(--muted)}
+.chip.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.tag{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:999px;background:var(--surface2);color:var(--muted);white-space:nowrap}
+.st-todo{background:var(--surface2);color:var(--muted)}
+.st-planned{background:var(--info-soft);color:var(--info)}
+.st-delivered{background:var(--ok-soft);color:var(--ok)}
+.st-skip{background:var(--surface2);color:var(--muted);text-decoration:line-through}
+.t-warn{background:var(--warn-soft);color:var(--warn)}
+.t-acc{background:var(--accent-soft);color:var(--accent)}
+.list{display:grid;gap:8px}
+.gi{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.gi:hover{border-color:var(--accent)}
+.gi .nm{font-weight:700}
+.gi .meta{font-size:12.5px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.gi .side{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.gi input[type=checkbox]{width:18px;height:18px}
+.bulk{position:sticky;top:96px;z-index:5;background:var(--text);color:var(--bg);border-radius:10px;padding:8px 12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.bulk .btn{background:transparent;color:var(--bg);border-color:rgba(255,255,255,.35)}
+.empty{color:var(--muted);text-align:center;padding:30px 10px}
+.slot{border-left:4px solid var(--info)}
+.slot.past{border-left-color:var(--warn)}
+.slot.done{border-left-color:var(--ok);opacity:.75}
+.slot h3{margin:0 0 4px;font-size:15px}
+.slot .names{font-size:13.5px;color:var(--muted);margin:6px 0 10px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal .h{font-size:11px;color:var(--muted);text-align:center;padding:4px 0}
+.cal .d{min-height:54px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px 4px;font-size:11px;cursor:pointer;overflow:hidden}
+.cal .d.out{opacity:.35}
+.cal .d.today{outline:2px solid var(--accent)}
+.cal .d.wed{background:var(--accent-soft)}
+.cal .d .dn{font-weight:700;font-size:12px}
+.cal .d .ev{display:block;background:var(--info-soft);color:var(--info);border-radius:3px;padding:0 3px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.desk-search{font-size:20px;padding:14px 16px;width:100%;border-radius:12px}
+.desk-res .gi{grid-template-columns:1fr}
+.amt{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.amt .btn{min-width:62px;justify-content:center}
+.amt .btn.on{background:var(--ok);border-color:var(--ok);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+dialog{border:0;border-radius:14px;padding:0;width:min(560px,calc(100vw - 24px));max-height:calc(100vh - 32px);background:var(--surface);color:var(--text);box-shadow:0 10px 40px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+.dlg-h{display:flex;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface);z-index:1}
+.dlg-h h3{margin:0;font-size:17px;flex:1}
+.dlg-b{padding:14px 16px;display:grid;gap:12px}
+.dlg-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--line);position:sticky;bottom:0;background:var(--surface)}
+fieldset{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0;display:grid;gap:8px}
+legend{font-size:12px;color:var(--muted);padding:0 4px}
+label.f{display:grid;gap:3px;font-size:12px;color:var(--muted)}
+label.f>input,label.f>select,label.f>textarea{color:var(--text)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{flex:1;border:0;background:var(--surface);color:var(--muted);padding:7px 4px;font:inherit;font-size:13px;cursor:pointer;border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button.on{background:var(--accent);color:#fff;font-weight:700}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:99;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1}
+.note{font-size:12.5px;color:var(--muted)}
+.hint{background:var(--surface2);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--muted)}
+@media (max-width:640px){
+  main{padding:12px 16px}.two{grid-template-columns:1fr}.top h1{font-size:16px}.mode{display:none}
+  .bulk{top:92px}.cal .d{min-height:44px}.cal .d .ev{font-size:10px}
+}
+@media print{header,.toolbar,.bulk,.btn,nav{display:none!important}body{background:#fff;color:#000}.gi{break-inside:avoid;border-color:#ccc}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>💐 아들 결혼식 하객관리</h1>
+    <span class="dday" id="dday">D-?</span>
+    <span class="mode" id="mode">로컬 저장</span>
+  </div>
+  <nav id="nav">
+    <button data-v="dash" class="on">대시보드</button>
+    <button data-v="list">명단·전달</button>
+    <button data-v="sched">방문 일정</button>
+    <button data-v="desk">당일 접수</button>
+    <button data-v="ledger">축의금·감사</button>
+    <button data-v="set">설정·백업</button>
+  </nav>
+</header>
+<main id="view"></main>
+
+<dialog id="dlg"></dialog>
+<dialog id="ask"></dialog>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" accept=".json,application/json" hidden>
+
+<script>
+"use strict";
+/* ───────── 상수 ───────── */
+const GROUPS=["지인","회사","친척","동기"];
+const STATUS={todo:"미전달",planned:"방문예정",delivered:"전달완료",skip:"전달안함"};
+const METHODS=["대면","우편","모바일","대리"];
+const RSVP={"":"미확인",yes:"참석",maybe:"미정",no:"불참"};
+const AMOUNTS=[50000,100000,150000,200000,300000,500000,1000000];
+const LS_KEY="wedding-guests-v1";
+const DEFAULT_SETTINGS={
+  weddingDate:"",weddingTime:"12:00",venue:"",venueAddr:"",groom:"",bride:"",
+  owaBase:"https://outlook.office.com",visitMinutes:60,alarm1:1440,alarm2:60,
+  invUrl:"",
+  invTpl:"{이름}님, 안녕하세요. 저희 아들 {신랑} 군이 {신부} 양과 결혼합니다.\n일시: {일시}\n장소: {장소}\n{모바일청첩장}\n바쁘시더라도 오셔서 축복해 주시면 감사하겠습니다.",
+  thanksTpl:"{이름}님, 바쁘신 중에도 아들 {신랑}의 결혼식에 귀한 걸음과 따뜻한 마음을 보내 주셔서 진심으로 감사드립니다. 받은 마음 잊지 않고 갚으며 살겠습니다."
+};
+
+/* ───────── 상태 ───────── */
+const S={tomb:{},guests:new Map(),settings:{...DEFAULT_SETTINGS},mode:"local",db:null,canWrite:true,
+  view:"dash",q:"",fGroup:"",fStatus:"",fFlag:"",sel:new Set(),calMonth:null,deskQ:"",deskLog:[]};
+
+/* ───────── 유틸 ───────── */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const won=n=>n?Number(n).toLocaleString("ko-KR")+"원":"—";
+const man=n=>n?(n%10000===0?(n/10000)+"만":Number(n).toLocaleString("ko-KR")):"—";
+const pad=n=>String(n).padStart(2,"0");
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today=()=>ymd(new Date());
+const parseLocal=s=>{if(!s)return null;const[d,t="00:00"]=s.split("T");const[y,m,dd]=d.split("-").map(Number);const[h,mi]=t.split(":").map(Number);return new Date(y,m-1,dd,h||0,mi||0)};
+const fmtDT=s=>{const d=parseLocal(s);if(!d)return"";const w="일월화수목금토"[d.getDay()];return`${d.getMonth()+1}/${d.getDate()}(${w}) ${pad(d.getHours())}:${pad(d.getMinutes())}`};
+const newId=()=>"n"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2200)}
+function dday(){const w=S.settings.weddingDate;if(!w)return null;const a=parseLocal(w),b=parseLocal(today());return Math.round((a-b)/864e5)}
+function guests(){return[...S.guests.values()].sort((a,b)=>GROUPS.indexOf(a.group)-GROUPS.indexOf(b.group)||(a.order??999)-(b.order??999)||a.name.localeCompare(b.name,"ko"))}
+/* 외부 자료(백업·GitHub)는 화면 HTML에 들어가므로 형식을 강제한다. id·그룹·상태 등은 정해진 값만 허용. */
+const ID_RE=/^[A-Za-z0-9_-]{1,40}$/,str=v=>v==null?"":String(v).slice(0,2000),num=v=>Math.max(0,Math.min(1e9,Math.round(+v||0)));
+const pick=(v,ok,d)=>ok.includes(v)?v:d,dt=(v,re)=>re.test(v||"")?v:"";
+function norm(g){g=g||{};return{...g,id:String(g.id),name:str(g.name).trim(),group:pick(g.group,GROUPS,"지인"),order:num(g.order)||null,
+  status:pick(g.status,Object.keys(STATUS),"todo"),method:pick(g.method,METHODS.concat(""),""),
+  visitAt:dt(g.visitAt,/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/),deliveredAt:dt(g.deliveredAt,/^\d{4}-\d{2}-\d{2}$/),
+  visitPlace:str(g.visitPlace),region:str(g.region),phone:str(g.phone).replace(/[^0-9+\-() ]/g,""),relation:str(g.relation),
+  rsvp:pick(g.rsvp,Object.keys(RSVP),""),attended:g.attended===true,companions:num(g.companions),meals:num(g.meals),gift:num(g.gift),
+  giftMethod:pick(g.giftMethod,["","현장","계좌이체","대리 전달"],""),giftVia:str(g.giftVia),thanked:g.thanked===true,pastGiven:num(g.pastGiven),
+  memo:str(g.memo),srcMark:g.srcMark==="*"?"*":"",updatedAt:dt(g.updatedAt,/^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/)}}
+const validG=g=>g&&ID_RE.test(String(g.id))&&typeof g.name==="string"&&g.name.trim();
+function normSettings(x){x=x||{};const o={...DEFAULT_SETTINGS};
+  for(const k of Object.keys(DEFAULT_SETTINGS))if(x[k]!=null)o[k]=typeof DEFAULT_SETTINGS[k]==="number"?num(x[k]):str(x[k]);
+  if(!/^https:\/\/[^\s"'<>]+$/.test(o.owaBase))o.owaBase=DEFAULT_SETTINGS.owaBase;if(o.invUrl&&!/^https?:\/\//.test(o.invUrl))o.invUrl="";
+  if(x._ts)o._ts=str(x._ts);return o}
+const normTomb=t=>Object.fromEntries(Object.entries(t&&typeof t==="object"?t:{}).filter(([k,v])=>ID_RE.test(k)&&typeof v==="string"))
+
+/* ───────── 저장소: 로컬(localStorage) / 웹(db) ───────── */
+function saveLocal(){try{localStorage.setItem(LS_KEY,JSON.stringify({guests:[...S.guests.values()],settings:S.settings,tomb:S.tomb}))}catch(e){}}
+function afterLocalWrite(){saveLocal();if(S.mode==="github")ghSchedule()}
+function loadLocal(){
+  let data=null;try{data=JSON.parse(localStorage.getItem(LS_KEY)||"null")}catch(e){}
+  if(data&&Array.isArray(data.guests)){data.guests.filter(validG).forEach(g=>S.guests.set(g.id,norm(g)));S.settings=normSettings(data.settings);S.tomb=normTomb(data.tomb)}
+  else if(window.GUEST_SEED){window.GUEST_SEED.filter(validG).forEach(g=>S.guests.set(g.id,norm(g)));saveLocal()}
+}
+async function putGuest(g){
+  g=norm(g);g.updatedAt=new Date().toISOString();S.guests.set(g.id,g);
+  if(S.mode==="cloud"){try{await S.db.collection("guests").doc(g.id).set(g)}catch(e){writeFail(e)}}else afterLocalWrite();
+}
+async function putMany(list,strict){
+  list=list.map(norm);for(const g of list){g.updatedAt=new Date().toISOString();S.guests.set(g.id,g)}
+  if(S.mode==="cloud"){for(const g of list){try{await S.db.collection("guests").doc(g.id).set(g)}catch(e){if(strict)throw e;writeFail(e);break}}}else afterLocalWrite();
+}
+async function delGuest(id){S.guests.delete(id);S.tomb[id]=new Date().toISOString();if(S.mode==="cloud"){try{await S.db.collection("guests").doc(id).delete()}catch(e){writeFail(e)}}else afterLocalWrite()}
+async function putSettings(){S.settings._ts=new Date().toISOString();if(S.mode==="cloud"){try{await S.db.doc("meta/settings").set(S.settings)}catch(e){writeFail(e)}}else afterLocalWrite()}
+
+/* ───────── GitHub 비공개 저장소 동기화 ─────────
+   앱 화면은 공개 Pages, 자료는 비공개 저장소의 data.json 한 파일.
+   토큰은 이 브라우저(localStorage)에만 둔다. 동시 수정은 사람별 updatedAt이 최신인 쪽을 남겨 합친다. */
+const GH_KEY="wedding-gh-v1",GH={privOk:"",sha:null,timer:null,busy:false,again:false,last:"",state:"",err:""};
+function ghCfg(){try{return JSON.parse(localStorage.getItem(GH_KEY)||"null")}catch(e){return null}}
+const b64dec=b=>new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g,"")),c=>c.charCodeAt(0)));
+const b64enc=t=>{const by=new TextEncoder().encode(t);let bin="";for(let i=0;i<by.length;i+=0x8000)bin+=String.fromCharCode(...by.subarray(i,i+0x8000));return btoa(bin)};
+function ghErr(st){return st===401?"토큰이 맞지 않거나 만료되었습니다":st===403?"토큰 권한이 없거나 요청 한도를 넘었습니다":st===404?"저장소를 찾을 수 없습니다(이름·토큰 권한 확인)":"GitHub 응답 오류 "+st}
+async function ghFetch(url,opt={},cfg=ghCfg()){return fetch("https://api.github.com/repos/"+cfg.repo+url,{cache:"no-store",...opt,
+  headers:{Authorization:"Bearer "+cfg.token,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28",...(opt.body?{"Content-Type":"application/json"}:{})}})}
+/* 공개 저장소에 명단이 올라가지 않도록, 비공개 저장소가 아니면 읽기·쓰기를 모두 멈춘다. */
+async function ghCheckPrivate(cfg=ghCfg()){const r=await ghFetch("",{},cfg);if(!r.ok)throw new Error(ghErr(r.status));
+  const j=await r.json();if(j.private!==true)throw new Error("공개 저장소입니다. 명단은 비공개 저장소에만 저장합니다");GH.privOk=cfg.repo}
+async function ghPull(cfg=ghCfg()){
+  if(GH.privOk!==cfg.repo)await ghCheckPrivate(cfg);
+  const r=await ghFetch("/contents/data.json?t="+Date.now(),{},cfg);
+  if(r.status===404){GH.sha=null;return null}
+  if(!r.ok)throw new Error(ghErr(r.status));const j=await r.json();GH.sha=j.sha;return JSON.parse(b64dec(j.content));
+}
+/* 반환: changed=화면 갱신 필요, ahead=이 기기에 아직 올리지 않은 변경이 있음 */
+function ghMerge(remote){
+  if(!remote)return{changed:false,ahead:true};const before=JSON.stringify([...S.guests.values()]);
+  const rg=(Array.isArray(remote.guests)?remote.guests:[]).filter(validG).map(norm),rt=normTomb(remote.tomb),rs=normSettings(remote.settings);
+  let ahead=false;const tomb={...rt};for(const[k,v]of Object.entries(S.tomb))if(!tomb[k]||v>tomb[k]){tomb[k]=v;ahead=true}
+  const m=new Map();for(const g of rg)m.set(g.id,g);
+  for(const g of S.guests.values()){const r=m.get(g.id);if(tomb[g.id]&&(g.updatedAt||"")<=tomb[g.id])continue;
+    if(!r||(g.updatedAt||"")>(r.updatedAt||"")){m.set(g.id,g);ahead=true}}
+  for(const[id,t]of Object.entries(tomb)){const g=m.get(id);if(g&&(g.updatedAt||"")<=t)m.delete(id)}
+  S.guests=m;S.tomb=tomb;
+  if((rs._ts||"")>=(S.settings._ts||""))S.settings=rs;else ahead=true;
+  saveLocal();return{changed:before!==JSON.stringify([...S.guests.values()]),ahead};
+}
+function ghSchedule(){clearTimeout(GH.timer);GH.state="pending";paintMode();GH.timer=setTimeout(ghPush,1200)}
+async function ghPush(){
+  if(GH.busy){GH.again=true;return}GH.busy=true;GH.state="sync";paintMode();
+  try{if(GH.privOk!==ghCfg().repo)await ghCheckPrivate();
+    for(let i=0;i<4;i++){
+      const body=JSON.stringify({version:2,savedAt:new Date().toISOString(),settings:S.settings,tomb:S.tomb,guests:guests()},null,1);
+      const r=await ghFetch("/contents/data.json",{method:"PUT",body:JSON.stringify({message:"하객관리 자료 갱신",content:b64enc(body),...(GH.sha?{sha:GH.sha}:{})})});
+      if(r.ok){GH.sha=(await r.json()).content.sha;GH.last=new Date().toTimeString().slice(0,5);GH.state="ok";GH.err="";break}
+      if(r.status===409||r.status===422){if(ghMerge(await ghPull()).changed)render();continue}
+      throw new Error(ghErr(r.status));
+    }
+    if(GH.state!=="ok")throw new Error("다른 기기와 저장이 겹쳤습니다. 잠시 뒤 다시 저장합니다");
+  }catch(e){GH.state="err";GH.err=e.message;toast("GitHub 저장 실패: "+e.message);clearTimeout(GH.timer);GH.timer=setTimeout(ghPush,30000)}
+  GH.busy=false;paintMode();if(GH.again){GH.again=false;ghPush()}
+}
+async function ghRefresh(force){
+  if(S.mode!=="github"||GH.busy||(GH.state==="pending"&&!force))return;
+  try{const{changed,ahead}=ghMerge(await ghPull());GH.last=new Date().toTimeString().slice(0,5);GH.err="";
+    if(ahead)ghSchedule();else if(GH.state!=="pending")GH.state="ok";
+    if(changed&&!$("#dlg").open&&!$("#ask").open)render();else paintMode()}
+  catch(e){GH.state="err";GH.err=e.message;paintMode()}
+}
+async function ghConnect(cfg){
+  const remote=await ghPull(cfg);try{localStorage.setItem(GH_KEY,JSON.stringify(cfg))}catch(e){throw new Error("이 브라우저는 설정을 저장할 수 없습니다")}
+  S.mode="github";
+  // 저장소가 비어 있거나 이 기기에 더 새 자료가 있으면 올린다.
+  if(ghMerge(remote).ahead)await ghPush();else{GH.state="ok";GH.last=new Date().toTimeString().slice(0,5)}
+}
+function writeFail(e){if(e&&e.code==="invalid_argument"){S.canWrite=false;toast("이 계정은 읽기 전용입니다")}else toast("저장 실패: "+(e&&e.message||e))}
+
+async function connectCloud(){
+  if(!(window.claude&&typeof window.claude.use==="function"))return;
+  let db=null;try{db=await window.claude.use("db")}catch(e){}
+  if(!db)return;
+  S.db=db;S.mode="cloud";S.guests.clear();
+  try{const u=await window.claude.use("user");if(u){const c=await u.can("data.write");if(c===false)S.canWrite=false}}catch(e){}
+  db.collection("guests").limit(1000).onSnapshot(snap=>{
+    S.guests.clear();snap.docs.forEach(d=>{const v=d.data();if(v&&validG({...v,id:d.id}))S.guests.set(d.id,norm({...v,id:d.id}))});render();
+  },e=>toast("동기화 오류: "+e.code));
+  db.doc("meta/settings").onSnapshot(s=>{if(s.exists){S.settings=normSettings(s.data());render()}});
+  render();
+}
+
+/* ───────── 메시지 템플릿 ───────── */
+function weddingText(){const s=S.settings;if(!s.weddingDate)return"(설정에서 예식일 입력)";return fmtDT(s.weddingDate+"T"+(s.weddingTime||"12:00"))}
+function fillTpl(tpl,g){const s=S.settings;return tpl.replaceAll("{이름}",g.name).replaceAll("{신랑}",s.groom||"○○").replaceAll("{신부}",s.bride||"○○")
+  .replaceAll("{일시}",weddingText()).replaceAll("{장소}",[s.venue,s.venueAddr].filter(Boolean).join(", ")||"(장소 미입력)")
+  .replaceAll("{모바일청첩장}",s.invUrl?"모바일 청첩장: "+s.invUrl:"").replace(/\n{2,}/g,"\n")}
+async function copy(t){try{await navigator.clipboard.writeText(t);toast("복사했습니다")}catch(e){ask("아래 내용을 길게 눌러 복사하세요",t,"닫기",true)}}
+/* 브라우저 confirm()은 웹 게시 화면에서 동작하지 않아 앱 안의 확인 창을 쓴다. */
+function ask(msg,text,okLabel="확인",noCancel=false){return new Promise(res=>{const d=$("#ask");
+  d.innerHTML=`<div class="dlg-b"><div style="white-space:pre-line">${esc(msg)}</div>${text?`<textarea rows="6" readonly>${esc(text)}</textarea>`:""}</div>
+  <div class="dlg-f">${noCancel?"":`<button class="btn" data-n>취소</button>`}<button class="btn pri" data-y>${esc(okLabel)}</button></div>`;
+  const done=v=>{d.close();res(v)};d.querySelector("[data-y]").onclick=()=>done(true);const n=d.querySelector("[data-n]");if(n)n.onclick=()=>done(false);
+  d.oncancel=()=>res(false);d.showModal();const ta=d.querySelector("textarea");if(ta){ta.focus();ta.select()}})}
+const FRAMED=(()=>{try{return window.top!==window}catch(e){return true}})();
+const smsHref=(phone,body)=>`sms:${phone.replace(/[^0-9+]/g,"")}${/iPhone|iPad|Mac/.test(navigator.userAgent)?"&":"?"}body=${encodeURIComponent(body)}`;
+
+/* ───────── 캘린더(Exchange) 연계 ───────── */
+function slots(){
+  const m=new Map();
+  for(const g of S.guests.values()){if(!g.visitAt||g.status==="skip")continue;const k=g.visitAt+"|"+(g.visitPlace||"");
+    if(!m.has(k))m.set(k,{key:k,at:g.visitAt,place:g.visitPlace||"",people:[]});m.get(k).people.push(g)}
+  return[...m.values()].sort((a,b)=>a.at.localeCompare(b.at));
+}
+function slotTitle(sl){const n=sl.people.map(p=>p.name);return`청첩장 전달: ${n.slice(0,3).join(", ")}${n.length>3?` 외 ${n.length-3}명`:""}`}
+function slotBody(sl){return"전달 대상\n"+sl.people.map(p=>`- ${p.name} (${p.group}${p.relation?", "+p.relation:""}${p.phone?", "+p.phone:""})`).join("\n")+
+  `\n\n예식: ${weddingText()} ${S.settings.venue||""}\n하객관리 앱에서 전달 결과를 체크하세요.`}
+function icsDate(d){return`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`}
+function icsEsc(s){return String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\r?\n/g,"\\n")}
+function fold(line){const enc=new TextEncoder();if(enc.encode(line).length<=74)return line;let out="",cur="",len=0;
+  for(const ch of line){const b=enc.encode(ch).length;if(len+b>74){out+=cur+"\r\n ";cur="";len=1}cur+=ch;len+=b}return out+cur}
+function vevent({uid,start,minutes,title,body,place,alarms}){
+  const end=new Date(start.getTime()+minutes*6e4);const L=["BEGIN:VEVENT","UID:"+uid,"DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z",
+    "DTSTART;TZID=Asia/Seoul:"+icsDate(start),"DTEND;TZID=Asia/Seoul:"+icsDate(end),"SUMMARY:"+icsEsc(title)];
+  if(place)L.push("LOCATION:"+icsEsc(place));if(body)L.push("DESCRIPTION:"+icsEsc(body));
+  for(const a of alarms.filter(x=>x>0))L.push("BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+icsEsc(title),`TRIGGER:-PT${a}M`,"END:VALARM");
+  L.push("END:VEVENT");return L;
+}
+function icsWrap(events){return["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//maestro4u//wedding-guests//KO","CALSCALE:GREGORIAN","METHOD:PUBLISH",
+  "BEGIN:VTIMEZONE","TZID:Asia/Seoul","BEGIN:STANDARD","DTSTART:19700101T000000","TZOFFSETFROM:+0900","TZOFFSETTO:+0900","TZNAME:KST","END:STANDARD","END:VTIMEZONE",
+  ...events.flat(),"END:VCALENDAR"].map(fold).join("\r\n")+"\r\n"}
+async function download(name,text,type){
+  try{const dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null;
+    if(dl){await dl.save({filename:name,data:text});return}}catch(e){if(e&&e.code)return toast("저장을 취소했습니다")}
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
+const slotUid=sl=>"visit-"+sl.at.replace(/\D/g,"")+"-"+[...(sl.place||"x")].reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,7).toString(36)+"@wedding";
+function slotEvent(sl){const s=S.settings;return vevent({uid:slotUid(sl),start:parseLocal(sl.at),minutes:+s.visitMinutes||60,title:slotTitle(sl),body:slotBody(sl),place:sl.place,alarms:[+s.alarm1,+s.alarm2]})}
+function icsSlot(sl){download(`청첩장전달_${sl.at.slice(0,10)}.ics`,icsWrap([slotEvent(sl)]),"text/calendar")}
+function icsAllSlots(){const list=slots().filter(sl=>sl.at>=today()&&sl.people.some(p=>p.status!=="delivered"));
+  if(!list.length)return toast("등록할 방문 일정이 없습니다");download(`청첩장전달_일정_${today()}.ics`,icsWrap(list.map(slotEvent)),"text/calendar");toast(`${list.length}개 일정 파일을 만들었습니다`)}
+function outlookLink(sl){const s=S.settings,st=parseLocal(sl.at),en=new Date(st.getTime()+(+s.visitMinutes||60)*6e4);
+  const iso=d=>`${ymd(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
+  const p=new URLSearchParams({path:"/calendar/action/compose",rru:"addevent",subject:slotTitle(sl),startdt:iso(st),enddt:iso(en),body:slotBody(sl),location:sl.place});
+  return(s.owaBase||"https://outlook.office.com").replace(/\/$/,"")+"/calendar/0/deeplink/compose?"+p.toString()}
+function milestoneICS(){
+  const s=S.settings;if(!s.weddingDate)return toast("설정에서 예식일을 먼저 입력하세요");
+  const w=parseLocal(s.weddingDate+"T"+(s.weddingTime||"12:00"));const at=(off,h)=>{const d=new Date(w);d.setDate(d.getDate()+off);d.setHours(h,0,0,0);return d};
+  const M=[[-60,9,"청첩장 전달 시작 · 방문 동선 짜기","하객관리 앱 [방문 일정]에서 그룹별 방문일을 지정하세요."],
+    [-30,9,"청첩장 전달 중간 점검","미전달자를 확인하고 대면이 어려운 분은 모바일·우편으로 전환하세요."],
+    [-14,9,"모바일 청첩장 일괄 발송","미전달·원거리 하객에게 모바일 청첩장을 보내세요."],
+    [-10,9,"참석 여부 확인 전화","전달완료·참석 미확인 하객에게 연락하세요."],
+    [-7,9,"식장 보증인원 확정","하객관리 앱의 참석 예정 인원·동반 인원으로 보증인원을 정하세요."],
+    [-1,18,"당일 접수 준비","접수대 담당자에게 당일 접수 화면 사용법을 알려주세요. 축의금 봉투·방명록·식권을 확인하세요."],
+    [0,+(s.weddingTime||"12:00").split(":")[0],"💐 아들 결혼식",[s.venue,s.venueAddr].filter(Boolean).join(", ")],
+    [1,10,"축의금 정산·장부 확정","당일 기록과 봉투를 대조하고 누락분을 입력하세요."],
+    [3,10,"감사 인사 시작","하객관리 앱 [축의금·감사]에서 감사 문자를 보내세요."],
+    [14,10,"감사 인사 마무리 점검","감사 인사 미완료 하객을 확인하세요."]];
+  const ev=M.map(([o,h,t,b],i)=>vevent({uid:`milestone-${i}-${s.weddingDate}@wedding`,start:at(o,h),minutes:o===0?180:30,title:(o===0?"":`[결혼식 D${o<0?o:"+"+o}] `)+t,body:b,place:o===0?s.venue:"",alarms:o===0?[1440,120]:[0]}));
+  download("결혼식_주요일정.ics",icsWrap(ev),"text/calendar");toast("주요 일정 10건 파일을 만들었습니다");
+}
+
+/* ───────── 화면 ───────── */
+function render(){
+  const d=dday();$("#dday").textContent=d===null?"예식일 미입력":d>0?`D-${d}`:d===0?"D-DAY":`D+${-d}`;
+  paintMode();
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.view));
+  const v=$("#view");
+  if(S.mode==="cloud"&&!S.guests.size&&S.view!=="set"){v.innerHTML=`<div class="card empty">웹 저장소가 비어 있습니다.<br>설정·백업에서 백업 파일(JSON)을 가져오세요.</div>`;return}
+  ({dash:vDash,list:vList,sched:vSched,desk:vDesk,ledger:vLedger,set:vSet})[S.view](v);
+}
+function paintMode(){const m=$("#mode");if(!m)return;
+  if(S.mode==="cloud")m.innerHTML=`<b>●</b> 웹 동기화${S.canWrite?"":" (읽기 전용)"}`;
+  else if(S.mode==="github")m.innerHTML=GH.state==="err"?`<span style="color:var(--danger)">● 동기화 실패</span>`:GH.state==="pending"||GH.state==="sync"?"● 저장 중…":`<b>●</b> GitHub 동기화 ${GH.last}`;
+  else m.textContent="● 이 기기에만 저장"}
+function counts(arr){const c={todo:0,planned:0,delivered:0,skip:0};arr.forEach(g=>c[g.status]++);return c}
+
+function vDash(v){
+  const all=guests(),act=all.filter(g=>g.status!=="skip"),c=counts(all),t=today(),d=dday();
+  const attendYes=act.filter(g=>g.rsvp==="yes"),heads=attendYes.reduce((s,g)=>s+1+(+g.companions||0),0);
+  const giftSum=all.reduce((s,g)=>s+(+g.gift||0),0),giftN=all.filter(g=>+g.gift).length;
+  const pct=act.length?Math.round(c.delivered/act.length*100):0;
+  const todos=smartTodos(all,t,d);
+  const upcoming=slots().filter(sl=>sl.at.slice(0,10)>=t).slice(0,5);
+  v.innerHTML=`
+  <div class="grid kpis">
+    <div class="card kpi"><div class="l">전달 진행률</div><div class="n">${pct}%</div><div class="s">${c.delivered} / ${act.length}명 전달완료</div></div>
+    <div class="card kpi"><div class="l">방문 예정</div><div class="n">${c.planned}</div><div class="s">일정 ${slots().filter(s=>s.at.slice(0,10)>=t).length}건</div></div>
+    <div class="card kpi"><div class="l">미전달</div><div class="n" style="color:var(--warn)">${c.todo}</div><div class="s">일정 미지정</div></div>
+    <div class="card kpi"><div class="l">참석 예정</div><div class="n">${attendYes.length}</div><div class="s">동반 포함 약 ${heads}명</div></div>
+    <div class="card kpi"><div class="l">축의금</div><div class="n" style="font-size:20px">${won(giftSum)}</div><div class="s">${giftN}건 기록</div></div>
+  </div>
+  <h2>오늘 할 일</h2>
+  <div class="card">${todos.length?todos.map(x=>`<div class="todo-item"><div class="ic">${x.ic}</div><div class="tx">${x.t}<small>${x.s}</small></div>${x.btn||""}</div>`).join(""):`<div class="empty">지금 처리할 항목이 없습니다 🎉</div>`}</div>
+  <h2>그룹별 전달 현황</h2>
+  <div class="card">
+    ${GROUPS.map(gr=>{const a=all.filter(g=>g.group===gr&&g.status!=="skip"),cc=counts(a),n=a.length||1;
+      return`<div class="grp"><b>${gr}</b><div class="bar"><i style="width:${cc.delivered/n*100}%;background:var(--ok)"></i><i style="width:${cc.planned/n*100}%;background:var(--info)"></i></div><span class="r">${cc.delivered}/${a.length}</span></div>`}).join("")}
+    <div class="legend"><span style="--c:var(--ok)">전달완료</span><span style="--c:var(--info)">방문예정</span><span style="--c:var(--surface2)">미전달</span></div>
+  </div>
+  <h2>다가오는 방문</h2>
+  ${upcoming.length?`<div class="grid">${upcoming.map(slotCard).join("")}</div>`:`<div class="card empty">지정된 방문 일정이 없습니다. [명단·전달]에서 여러 명을 골라 한 번에 일정을 잡으세요.</div>`}`;
+  bindSlotBtns(v);
+}
+function smartTodos(all,t,d){
+  const L=[];const ss=slots();
+  const todaySl=ss.filter(sl=>sl.at.slice(0,10)===t);
+  todaySl.forEach(sl=>L.push({ic:"🚗",t:`오늘 ${fmtDT(sl.at).split(" ")[1]} ${esc(sl.place||"방문")}`,s:sl.people.map(p=>esc(p.name)).join(", ")}));
+  const overdue=all.filter(g=>g.status==="planned"&&g.visitAt&&g.visitAt.slice(0,10)<t);
+  if(overdue.length)L.push({ic:"⚠️",t:`방문일이 지난 ${overdue.length}명의 결과 입력이 필요합니다`,s:overdue.slice(0,6).map(g=>esc(g.name)).join(", ")+(overdue.length>6?" …":""),btn:`<button class="btn sm" data-go="list" data-flag="overdue">확인</button>`});
+  const todo=all.filter(g=>g.status==="todo");
+  if(d!==null&&d<=21&&d>=0&&todo.length)L.push({ic:"📱",t:`D-${d}: 아직 미전달 ${todo.length}명`,s:"대면 전달이 어렵다면 모바일 청첩장으로 전환하세요.",btn:`<button class="btn sm" data-go="list" data-flag="todo">보기</button>`});
+  else if(todo.length&&(d===null||d>21))L.push({ic:"🗓️",t:`방문 일정이 없는 ${todo.length}명`,s:"그룹·지역으로 묶어 한 번에 일정을 잡으면 동선이 줄어듭니다.",btn:`<button class="btn sm" data-go="list" data-flag="todo">일정 잡기</button>`});
+  const noRsvp=all.filter(g=>g.status==="delivered"&&!g.rsvp);
+  if(d!==null&&d<=10&&d>=0&&noRsvp.length)L.push({ic:"☎️",t:`참석 여부 미확인 ${noRsvp.length}명`,s:"식장 보증인원 확정 전에 확인하세요.",btn:`<button class="btn sm" data-go="list" data-flag="norsvp">보기</button>`});
+  const noThanks=all.filter(g=>(g.attended||+g.gift)&&!g.thanked);
+  if(d!==null&&d<0&&noThanks.length)L.push({ic:"💌",t:`감사 인사 대기 ${noThanks.length}명`,s:"축의금·감사 화면에서 문자 문안을 복사해 보내세요.",btn:`<button class="btn sm" data-go="ledger">이동</button>`});
+  if(!S.settings.weddingDate)L.unshift({ic:"⚙️",t:"예식 날짜·장소를 입력하세요",s:"D-day 계산, 문자 문안, 주요 일정 알림에 쓰입니다.",btn:`<button class="btn sm" data-go="set">설정</button>`});
+  return L;
+}
+function slotCard(sl){const t=today(),done=sl.people.every(p=>p.status==="delivered"),past=!done&&sl.at.slice(0,10)<t;
+  return`<div class="card slot ${done?"done":past?"past":""}" data-k="${esc(sl.key)}">
+    <h3>${fmtDT(sl.at)} · ${esc(sl.place||"장소 미정")}</h3>
+    <div class="row">${done?`<span class="tag st-delivered">전달완료</span>`:past?`<span class="tag t-warn">결과 입력 필요</span>`:`<span class="tag st-planned">예정</span>`}<span class="tag">${sl.people.length}명</span></div>
+    <div class="names">${sl.people.map(p=>`${esc(p.name)}${p.status==="delivered"?" ✓":""}`).join(", ")}</div>
+    <div class="row">
+      <button class="btn sm" data-act="ics">📅 일정 파일(.ics)</button>
+      <a class="btn sm" target="_blank" rel="noopener" href="${esc(outlookLink(sl))}">Outlook 웹에 추가</a>
+      ${done?"":`<button class="btn sm pri" data-act="done">모두 전달완료</button>`}
+      <button class="btn sm ghost" data-act="edit">변경</button>
+    </div></div>`}
+function bindSlotBtns(root){
+  root.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{S.view=b.dataset.go;if(b.dataset.flag){S.fFlag=b.dataset.flag;S.fStatus="";S.fGroup=""}render();scrollTo(0,0)});
+  root.querySelectorAll(".slot").forEach(card=>{const sl=slots().find(s=>s.key===card.dataset.k);if(!sl)return;
+    card.querySelectorAll("[data-act]").forEach(b=>b.onclick=async()=>{const a=b.dataset.act;
+      if(a==="ics")icsSlot(sl);
+      if(a==="done"){await putMany(sl.people.map(p=>({...p,status:"delivered",method:p.method||"대면",deliveredAt:sl.at.slice(0,10)})));toast(`${sl.people.length}명 전달완료`);render()}
+      if(a==="edit")openBulkVisit(sl.people.map(p=>p.id),sl)})});
+}
+
+function filtered(){
+  const q=S.q.trim().toLowerCase(),t=today();
+  return guests().filter(g=>{
+    if(S.fGroup&&g.group!==S.fGroup)return false;
+    if(S.fStatus&&g.status!==S.fStatus)return false;
+    if(S.fFlag==="overdue"&&!(g.status==="planned"&&g.visitAt&&g.visitAt.slice(0,10)<t))return false;
+    if(S.fFlag==="todo"&&g.status!=="todo")return false;
+    if(S.fFlag==="norsvp"&&!(g.status==="delivered"&&!g.rsvp))return false;
+    if(S.fFlag==="mark"&&!g.srcMark)return false;
+    if(q&&!(g.name+" "+g.relation+" "+g.region+" "+g.memo+" "+g.phone+" "+g.visitPlace).toLowerCase().includes(q))return false;
+    return true});
+}
+function vList(v){
+  const arr=filtered(),c=counts(guests());
+  const flagNames={overdue:"방문일 지남",todo:"미전달",norsvp:"참석 미확인",mark:"원본 * 표시"};
+  v.innerHTML=`
+  <div class="toolbar">
+    <input class="search" id="q" placeholder="이름·관계·지역·메모 검색" value="${esc(S.q)}">
+    <button class="btn pri" id="add">+ 새로 추가</button>
+  </div>
+  <div class="toolbar chips" id="fg"><button class="chip ${!S.fGroup?"on":""}" data-g="">전체 그룹</button>${GROUPS.map(g=>`<button class="chip ${S.fGroup===g?"on":""}" data-g="${g}">${g}</button>`).join("")}</div>
+  <div class="toolbar chips" id="fs"><button class="chip ${!S.fStatus?"on":""}" data-s="">전체 상태</button>${Object.entries(STATUS).map(([k,l])=>`<button class="chip ${S.fStatus===k?"on":""}" data-s="${k}">${l} ${c[k]}</button>`).join("")}
+    ${S.fFlag?`<button class="chip on" data-x="1">${flagNames[S.fFlag]} ✕</button>`:`<button class="chip" data-f="mark">원본 * 표시</button>`}</div>
+  ${S.sel.size?`<div class="bulk"><b>${S.sel.size}명 선택</b>
+    <button class="btn sm" data-b="visit">방문일 일괄 지정</button><button class="btn sm" data-b="deliv">전달완료</button>
+    <button class="btn sm" data-b="mobile">모바일 전달</button><button class="btn sm" data-b="msg">초대 문구 복사</button><button class="btn sm" data-b="clear">선택 해제</button></div>`:""}
+  <div class="row note" style="margin-bottom:8px"><label><input type="checkbox" id="selAll" ${arr.length&&arr.every(g=>S.sel.has(g.id))?"checked":""}> 보이는 ${arr.length}명 모두 선택</label></div>
+  <div class="list">${arr.map(g=>`
+    <div class="gi" data-id="${g.id}">
+      <input type="checkbox" ${S.sel.has(g.id)?"checked":""} data-sel>
+      <div><div class="nm">${esc(g.name)} ${g.srcMark?`<span class="tag t-warn" title="원본 엑셀의 * 표시">*</span>`:""}</div>
+        <div class="meta"><span class="tag">${g.group}</span>${g.relation?`<span>${esc(g.relation)}</span>`:""}${g.region?`<span>📍${esc(g.region)}</span>`:""}
+        ${g.visitAt&&g.status!=="delivered"?`<span>🗓️ ${fmtDT(g.visitAt)}</span>`:""}${g.method&&g.status==="delivered"?`<span>${esc(g.method)}</span>`:""}</div></div>
+      <div class="side"><span class="tag st-${g.status}">${STATUS[g.status]}</span>${g.rsvp?`<span class="tag ${g.rsvp==="yes"?"t-acc":""}">${RSVP[g.rsvp]}</span>`:""}</div>
+    </div>`).join("")||`<div class="empty">조건에 맞는 사람이 없습니다.</div>`}</div>`;
+  const q=$("#q");q.oninput=()=>{S.q=q.value;const pos=q.selectionStart;vList(v);const n=$("#q");n.focus();n.setSelectionRange(pos,pos)};
+  $("#add").onclick=()=>openEdit(null);
+  v.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{S.fGroup=b.dataset.g;vList(v)});
+  v.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{S.fStatus=b.dataset.s;S.fFlag="";vList(v)});
+  v.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{S.fFlag=b.dataset.f;vList(v)});
+  v.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{S.fFlag="";vList(v)});
+  $("#selAll").onchange=e=>{arr.forEach(g=>e.target.checked?S.sel.add(g.id):S.sel.delete(g.id));vList(v)};
+  v.querySelectorAll(".gi").forEach(el=>el.onclick=e=>{const id=el.dataset.id;
+    if(e.target.matches("[data-sel]")){e.target.checked?S.sel.add(id):S.sel.delete(id);vList(v);return}openEdit(id)});
+  v.querySelectorAll("[data-b]").forEach(b=>b.onclick=async()=>{const ids=[...S.sel],a=b.dataset.b,ps=ids.map(i=>S.guests.get(i)).filter(Boolean);
+    if(a==="clear"){S.sel.clear();return vList(v)}
+    if(a==="visit")return openBulkVisit(ids);
+    if(a==="deliv"||a==="mobile"){await putMany(ps.map(p=>({...p,status:"delivered",method:a==="mobile"?"모바일":(p.method||"대면"),deliveredAt:p.deliveredAt||today()})));toast(`${ps.length}명 전달완료 처리`);S.sel.clear();vList(v)}
+    if(a==="msg")copy(fillTpl(S.settings.invTpl,{name:"(이름)"}).replace("(이름)님, ",""))});
+}
+
+function openBulkVisit(ids,sl){
+  const dlg=$("#dlg");const at=sl?sl.at:"",place=sl?sl.place:"";
+  const regions=[...new Set(guests().map(g=>g.visitPlace).filter(Boolean))];
+  dlg.innerHTML=`<div class="dlg-h"><h3>${ids.length}명 방문 일정</h3><button class="btn ghost" data-c>✕</button></div>
+  <div class="dlg-b">
+    <label class="f">방문 일시<input type="datetime-local" id="bAt" value="${esc(at)}"></label>
+    <label class="f">장소<input id="bPl" list="plList" value="${esc(place)}" placeholder="예: 회사 사무실, ○○식당"><datalist id="plList">${regions.map(r=>`<option value="${esc(r)}">`).join("")}</datalist></label>
+    <div class="hint">저장하면 이 사람들이 <b>하나의 방문 일정</b>으로 묶입니다. 다음 단계에서 Exchange 캘린더에 등록합니다 (알림 ${S.settings.alarm1/60}시간 전 · ${S.settings.alarm2}분 전).</div>
+    <div class="note">${ids.map(i=>esc(S.guests.get(i)?.name)).join(", ")}</div>
+  </div>
+  <div class="dlg-f">${sl?`<button class="btn" data-clr style="margin-right:auto">일정 삭제</button>`:""}<button class="btn" data-c>취소</button><button class="btn pri" data-ok>저장</button></div>`;
+  dlg.showModal();
+  dlg.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>dlg.close());
+  const clr=dlg.querySelector("[data-clr]");if(clr)clr.onclick=async()=>{await putMany(ids.map(i=>({...S.guests.get(i),visitAt:"",visitPlace:"",status:S.guests.get(i).status==="planned"?"todo":S.guests.get(i).status})));dlg.close();render()};
+  dlg.querySelector("[data-ok]").onclick=async()=>{const a=$("#bAt").value,p=$("#bPl").value.trim();if(!a)return toast("방문 일시를 입력하세요");
+    await putMany(ids.map(i=>{const g=S.guests.get(i);return{...g,visitAt:a,visitPlace:p,status:g.status==="delivered"?"delivered":"planned"}}));
+    S.sel.clear();const nsl=slots().find(s=>s.key===a+"|"+p);
+    dlg.innerHTML=`<div class="dlg-h"><h3>✅ 일정 저장 완료</h3></div><div class="dlg-b">
+      <div>${fmtDT(a)} · ${esc(p||"장소 미정")} · ${ids.length}명</div>
+      <div class="hint">Exchange 캘린더에 넣는 방법을 고르세요.<br>• <b>일정 파일(.ics)</b>: Outlook·맥 캘린더·아이폰에서 열면 Exchange 캘린더에 추가됩니다. 알림 2개가 함께 들어갑니다.<br>• <b>Outlook 웹</b>: 회사 Exchange(Microsoft 365) 일정 작성 화면이 열립니다.</div>
+      <div class="row"><button class="btn pri" id="dIcs">📅 일정 파일 받기</button><a class="btn" target="_blank" rel="noopener" href="${esc(outlookLink(nsl))}">Outlook 웹에 추가</a></div></div>
+      <div class="dlg-f"><button class="btn" data-c>닫기</button></div>`;
+    $("#dIcs").onclick=()=>icsSlot(nsl);dlg.querySelector("[data-c]").onclick=()=>dlg.close();render()};
+}
+
+function openEdit(id){
+  const g=id?{...S.guests.get(id)}:norm({id:newId(),name:"",group:"지인"});const dlg=$("#dlg");
+  const seg=(name,opts,val)=>`<div class="seg" data-seg="${name}">${Object.entries(opts).map(([k,l])=>`<button type="button" data-v="${k}" class="${val===k?"on":""}">${l}</button>`).join("")}</div>`;
+  dlg.innerHTML=`<div class="dlg-h"><h3>${id?esc(g.name):"새 하객 추가"}</h3><button class="btn ghost" data-c>✕</button></div>
+  <form class="dlg-b" id="ef" onsubmit="return false">
+    <div class="two"><label class="f">이름<input name="name" value="${esc(g.name)}" required></label>
+      <label class="f">그룹<select name="group">${GROUPS.map(x=>`<option ${g.group===x?"selected":""}>${x}</option>`).join("")}</select></label></div>
+    <div class="two"><label class="f">관계·소속<input name="relation" value="${esc(g.relation)}" placeholder="예: ○○건설 부장"></label>
+      <label class="f">연락처<input name="phone" type="tel" value="${esc(g.phone)}"></label></div>
+    <label class="f">지역(동선 묶기용)<input name="region" value="${esc(g.region)}" placeholder="예: 판교, 마산"></label>
+    <fieldset><legend>청첩장 전달</legend>
+      ${seg("status",STATUS,g.status)}
+      <div class="two"><label class="f">방문 일시<input type="datetime-local" name="visitAt" value="${esc(g.visitAt)}"></label>
+        <label class="f">방문 장소<input name="visitPlace" value="${esc(g.visitPlace)}"></label></div>
+      <div class="two"><label class="f">전달 방법<select name="method"><option value="">—</option>${METHODS.map(x=>`<option ${g.method===x?"selected":""}>${x}</option>`).join("")}</select></label>
+        <label class="f">전달일<input type="date" name="deliveredAt" value="${esc(g.deliveredAt)}"></label></div>
+    </fieldset>
+    <fieldset><legend>참석·축의금</legend>
+      ${seg("rsvp",RSVP,g.rsvp)}
+      <div class="two"><label class="f">동반 인원(본인 제외)<input type="number" min="0" name="companions" value="${+g.companions||0}"></label>
+        <label class="f">당일 참석<select name="attended"><option value="">—</option><option value="1" ${g.attended?"selected":""}>참석함</option></select></label></div>
+      <div class="two"><label class="f">축의금(원)<input type="number" step="10000" min="0" name="gift" value="${+g.gift||""}"></label>
+        <label class="f">받은 방법<select name="giftMethod"><option value="">—</option>${["현장","계좌이체","대리 전달"].map(x=>`<option ${g.giftMethod===x?"selected":""}>${x}</option>`).join("")}</select></label></div>
+      <label class="f">대리 전달인(○○ 편에)<input name="giftVia" value="${esc(g.giftVia)}"></label>
+    </fieldset>
+    <fieldset><legend>상호부조 장부</legend>
+      <div class="two"><label class="f">내가 예전에 낸 금액(원)<input type="number" step="10000" min="0" name="pastGiven" value="${+g.pastGiven||""}"></label>
+        <label class="f">감사 인사<select name="thanked"><option value="">미완료</option><option value="1" ${g.thanked?"selected":""}>완료</option></select></label></div>
+    </fieldset>
+    <label class="f">메모<textarea name="memo" rows="2">${esc(g.memo)}</textarea></label>
+    ${g.srcMark?`<div class="note">원본 엑셀에 <b>*</b> 표시가 있던 항목입니다.</div>`:""}
+    <div class="row">${g.phone?`<a class="btn sm" href="tel:${esc(g.phone)}">📞 전화</a><a class="btn sm" href="${esc(smsHref(g.phone,fillTpl(S.settings.invTpl,g)))}">✉️ 초대 문자</a>`:""}
+      <button type="button" class="btn sm" id="cpInv">초대 문구 복사</button></div>
+  </form>
+  <div class="dlg-f">${id?`<button class="btn" id="del" style="margin-right:auto;color:var(--danger)">삭제</button>`:""}<button class="btn" data-c>취소</button><button class="btn pri" id="sv">저장</button></div>`;
+  dlg.showModal();
+  dlg.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>dlg.close());
+  dlg.querySelectorAll("[data-seg]").forEach(sg=>sg.querySelectorAll("button").forEach(b=>b.onclick=()=>{sg.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}));
+  $("#cpInv").onclick=()=>copy(fillTpl(S.settings.invTpl,{...g,name:$("#ef").name.value||g.name}));
+  if(id)$("#del").onclick=async()=>{if(await ask(`${g.name}님을 명단에서 삭제할까요?`,"","삭제")){await delGuest(id);dlg.close();render()}};
+  $("#sv").onclick=async()=>{const f=$("#ef"),fd=new FormData(f);if(!fd.get("name").trim())return toast("이름을 입력하세요");
+    const ng={...g};for(const[k,val]of fd.entries())ng[k]=typeof val==="string"?val.trim():val;
+    ng.status=dlg.querySelector('[data-seg="status"] .on')?.dataset.v||"todo";ng.rsvp=dlg.querySelector('[data-seg="rsvp"] .on')?.dataset.v||"";
+    ["companions","gift","pastGiven"].forEach(k=>ng[k]=+ng[k]||0);ng.attended=ng.attended==="1";ng.thanked=ng.thanked==="1";
+    if(ng.visitAt&&ng.status==="todo")ng.status="planned";
+    if(ng.status==="delivered"&&!ng.deliveredAt)ng.deliveredAt=today();
+    await putGuest(ng);dlg.close();render();toast("저장했습니다")};
+}
+
+function vSched(v){
+  const ss=slots(),t=today();
+  if(!S.calMonth){const n=ss.find(s=>s.at.slice(0,10)>=t);S.calMonth=(n?n.at:t).slice(0,7)}
+  const[y,m]=S.calMonth.split("-").map(Number),first=new Date(y,m-1,1),start=new Date(first);start.setDate(1-first.getDay());
+  const byDay={};ss.forEach(s=>{(byDay[s.at.slice(0,10)]??=[]).push(s)});
+  const cells=[];for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const k=ymd(d);
+    cells.push(`<div class="d ${d.getMonth()!==m-1?"out":""} ${k===t?"today":""} ${k===S.settings.weddingDate?"wed":""}" data-day="${k}"><div class="dn">${d.getDate()}${k===S.settings.weddingDate?" 💐":""}</div>${(byDay[k]||[]).map(s=>`<span class="ev">${s.at.slice(11,16)} ${esc(s.people[0].name)}${s.people.length>1?"+"+(s.people.length-1):""}</span>`).join("")}</div>`)}
+  const regionGroups={};guests().filter(g=>g.status==="todo"&&g.region).forEach(g=>(regionGroups[g.region]??=[]).push(g));
+  const upcoming=ss.filter(s=>s.at.slice(0,10)>=t),past=ss.filter(s=>s.at.slice(0,10)<t&&s.people.some(p=>p.status!=="delivered"));
+  v.innerHTML=`
+  <div class="toolbar"><button class="btn" id="pm">‹</button><b style="min-width:90px;text-align:center">${y}년 ${m}월</b><button class="btn" id="nm">›</button>
+    <span style="flex:1"></span><button class="btn pri" id="allIcs">📅 남은 방문 전체 .ics</button><button class="btn" id="msIcs">💐 결혼식 주요일정 .ics</button></div>
+  <div class="card"><div class="cal">${"일월화수목금토".split("").map(w=>`<div class="h">${w}</div>`).join("")}${cells.join("")}</div></div>
+  ${Object.keys(regionGroups).length?`<h2>동선 제안 · 같은 지역 미전달자</h2><div class="card">${Object.entries(regionGroups).sort((a,b)=>b[1].length-a[1].length).map(([r,ps])=>`<div class="todo-item"><div class="ic">📍</div><div class="tx"><b>${esc(r)}</b> ${ps.length}명<small>${ps.map(p=>esc(p.name)).join(", ")}</small></div><button class="btn sm" data-reg="${esc(r)}">한 번에 일정 잡기</button></div>`).join("")}</div>`:""}
+  ${past.length?`<h2>결과 입력 필요</h2><div class="grid">${past.map(slotCard).join("")}</div>`:""}
+  <h2>예정된 방문 ${upcoming.length}건</h2>
+  ${upcoming.length?`<div class="grid">${upcoming.map(slotCard).join("")}</div>`:`<div class="card empty">예정된 방문이 없습니다.</div>`}
+  <div class="hint" style="margin-top:16px"><b>Exchange 캘린더 연계 방법</b><br>
+  ① <b>.ics 파일</b> — 맥 Outlook/캘린더, 아이폰 Safari에서 열면 "캘린더에 추가"가 뜹니다. Exchange 계정 캘린더를 고르세요. 미리 알림(${S.settings.alarm1/60}시간 전·${S.settings.alarm2}분 전)이 함께 등록됩니다.<br>
+  ② <b>Outlook 웹</b> — Microsoft 365 Exchange 일정 작성 화면이 바로 열립니다. 사내 OWA 주소는 설정에서 바꿉니다.<br>
+  ③ <b>맥 자동 등록</b> — 백업 JSON을 받은 뒤 <code>exchange_sync.py</code>를 실행하면 Exchange 캘린더와 미리알림 앱에 한 번에 등록합니다(같은 일정은 중복 등록하지 않음).</div>`;
+  $("#pm").onclick=()=>{S.calMonth=ymd(new Date(y,m-2,1)).slice(0,7);vSched(v)};$("#nm").onclick=()=>{S.calMonth=ymd(new Date(y,m,1)).slice(0,7);vSched(v)};
+  $("#allIcs").onclick=icsAllSlots;$("#msIcs").onclick=milestoneICS;
+  v.querySelectorAll("[data-reg]").forEach(b=>b.onclick=()=>openBulkVisit(regionGroups[b.dataset.reg].map(p=>p.id)));
+  v.querySelectorAll(".cal .d").forEach(c=>c.onclick=()=>{const k=c.dataset.day;const el=[...v.querySelectorAll(".slot")].find(s=>s.dataset.k.startsWith(k));if(el)el.scrollIntoView({behavior:"smooth",block:"center"})});
+  bindSlotBtns(v);
+}
+
+function vDesk(v){
+  const q=S.deskQ.trim(),res=q?guests().filter(g=>g.name.includes(q)).slice(0,8):[];
+  const att=guests().filter(g=>g.attended),sum=guests().reduce((s,g)=>s+(+g.gift||0),0);
+  v.innerHTML=`
+  <div class="grid kpis" style="margin-bottom:12px"><div class="card kpi"><div class="l">현재 참석 체크</div><div class="n">${att.length}</div></div><div class="card kpi"><div class="l">축의금 누계</div><div class="n" style="font-size:20px">${won(sum)}</div></div></div>
+  <input class="desk-search" id="dq" placeholder="🔎 하객 이름을 입력하세요" value="${esc(q)}" autocomplete="off">
+  <div class="desk-res list" style="margin-top:10px">${res.map(g=>`
+    <div class="card" data-id="${g.id}"><div class="row"><b style="font-size:18px">${esc(g.name)}</b><span class="tag">${g.group}</span>${g.attended?`<span class="tag st-delivered">참석 ✓</span>`:""}${g.gift?`<span class="tag t-acc">${man(g.gift)}</span>`:""}</div>
+      <div class="amt">${AMOUNTS.map(a=>`<button class="btn ${+g.gift===a?"on":""}" data-amt="${a}">${man(a)}</button>`).join("")}<input type="number" step="10000" placeholder="직접 입력" style="width:110px" data-custom></div>
+      <div class="row" style="margin-top:8px"><button class="btn pri" data-att>${g.attended?"참석 취소":"참석 체크만"}</button>
+      <label class="note">동반 <input type="number" min="0" value="${+g.companions||0}" style="width:56px" data-comp>명</label>
+      <label class="note">식권 <input type="number" min="0" value="${+g.meals||0}" style="width:56px" data-meal>장</label></div></div>`).join("")}
+    ${q&&!res.some(g=>g.name===q)?`<div class="card row"><span>명단에 없는 <b>${esc(q)}</b>님</span><button class="btn pri" id="dAdd">새 하객으로 등록</button></div>`:""}
+  </div>
+  ${S.deskLog.length?`<h2>방금 처리</h2><div class="card">${S.deskLog.slice(0,8).map(l=>`<div class="note">${l}</div>`).join("")}</div>`:""}
+  <div class="hint" style="margin-top:16px">접수대 사용법: 이름 두세 글자 입력 → 금액 버튼 한 번 → 자동으로 참석 체크와 축의금이 기록됩니다. 봉투 뒷면 번호를 메모하려면 [명단·전달]에서 메모란을 쓰세요.</div>`;
+  const dq=$("#dq");dq.oninput=()=>{S.deskQ=dq.value;vDesk(v);const n=$("#dq");n.focus();n.setSelectionRange(n.value.length,n.value.length)};
+  const log=(g,m)=>{S.deskLog.unshift(`${new Date().toTimeString().slice(0,5)} ${esc(g.name)} — ${m}`)};
+  v.querySelectorAll(".desk-res [data-id]").forEach(card=>{const g=()=>({...S.guests.get(card.dataset.id)});
+    card.querySelectorAll("[data-amt]").forEach(b=>b.onclick=async()=>{const x=g();x.gift=+b.dataset.amt;x.attended=true;x.giftMethod=x.giftMethod||"현장";await putGuest(x);log(x,man(x.gift)+" 기록");S.deskQ="";vDesk(v);$("#dq").focus()});
+    card.querySelector("[data-custom]").onchange=async e=>{const x=g();x.gift=+e.target.value||0;x.attended=true;x.giftMethod=x.giftMethod||"현장";await putGuest(x);log(x,won(x.gift)+" 기록");S.deskQ="";vDesk(v);$("#dq").focus()};
+    card.querySelector("[data-att]").onclick=async()=>{const x=g();x.attended=!x.attended;await putGuest(x);log(x,x.attended?"참석 체크":"참석 취소");vDesk(v)};
+    card.querySelector("[data-comp]").onchange=async e=>{const x=g();x.companions=+e.target.value||0;await putGuest(x)};
+    card.querySelector("[data-meal]").onchange=async e=>{const x=g();x.meals=+e.target.value||0;await putGuest(x)};
+  });
+  const add=$("#dAdd");if(add)add.onclick=async()=>{const x=norm({id:newId(),name:q,group:"지인",memo:"당일 현장 등록",attended:true});await putGuest(x);log(x,"현장 등록");S.deskQ=q;vDesk(v)};
+  if(!q)setTimeout(()=>{const n=$("#dq");n&&n.focus()},50);
+}
+
+function vLedger(v){
+  const all=guests(),withGift=all.filter(g=>+g.gift||g.attended);
+  const total=all.reduce((s,g)=>s+(+g.gift||0),0);
+  const byG=GROUPS.map(gr=>{const a=all.filter(g=>g.group===gr&&+g.gift);return{gr,n:a.length,sum:a.reduce((s,g)=>s+ +g.gift,0)}});
+  const pending=withGift.filter(g=>!g.thanked);
+  v.innerHTML=`
+  <div class="grid kpis">
+    <div class="card kpi"><div class="l">축의금 합계</div><div class="n" style="font-size:20px">${won(total)}</div><div class="s">${all.filter(g=>+g.gift).length}건</div></div>
+    ${byG.map(b=>`<div class="card kpi"><div class="l">${b.gr}</div><div class="n" style="font-size:18px">${won(b.sum)}</div><div class="s">${b.n}건</div></div>`).join("")}
+    <div class="card kpi"><div class="l">감사 인사 대기</div><div class="n" style="color:var(--accent)">${pending.length}</div></div>
+  </div>
+  <h2>감사 인사 체크리스트</h2>
+  <div class="card">${pending.length?pending.map(g=>`<div class="todo-item" data-id="${g.id}"><div class="ic">💌</div><div class="tx"><b>${esc(g.name)}</b> <span class="tag">${g.group}</span><small>${g.gift?man(g.gift):"참석"}${g.giftVia?" · "+esc(g.giftVia)+" 편":""}</small></div>
+    <div class="row">${g.phone?`<a class="btn sm" href="${esc(smsHref(g.phone,fillTpl(S.settings.thanksTpl,g)))}">문자</a>`:""}<button class="btn sm" data-cp>문구 복사</button><button class="btn sm pri" data-ok>완료</button></div></div>`).join(""):`<div class="empty">감사 인사 대기자가 없습니다.</div>`}</div>
+  <h2>축의금 장부 · 상호부조 기록</h2>
+  <div class="toolbar"><button class="btn" id="csv">엑셀용 CSV 받기</button>${FRAMED?"":`<button class="btn" onclick="print()">인쇄</button>`}<span class="note">내가 예전에 낸 금액을 함께 적어두면, 다음 경조사 때 참고할 수 있습니다.</span></div>
+  <div class="tbl-wrap"><table><thead><tr><th>이름</th><th>그룹</th><th class="num">받은 금액</th><th>방법</th><th class="num">내가 낸 금액</th><th>감사</th></tr></thead>
+  <tbody>${all.filter(g=>+g.gift||+g.pastGiven).sort((a,b)=>(+b.gift||0)-(+a.gift||0)).map(g=>`<tr data-id="${g.id}" style="cursor:pointer"><td>${esc(g.name)}</td><td>${g.group}</td><td class="num">${won(g.gift)}</td><td>${esc(g.giftMethod)}${g.giftVia?" ("+esc(g.giftVia)+")":""}</td><td class="num">${won(g.pastGiven)}</td><td>${g.thanked?"✓":""}</td></tr>`).join("")||`<tr><td colspan="6" class="empty">아직 기록이 없습니다.</td></tr>`}</tbody></table></div>`;
+  v.querySelectorAll(".todo-item[data-id]").forEach(r=>{const g=S.guests.get(r.dataset.id);
+    r.querySelector("[data-cp]").onclick=()=>copy(fillTpl(S.settings.thanksTpl,g));
+    r.querySelector("[data-ok]").onclick=async()=>{await putGuest({...g,thanked:true});vLedger(v)}});
+  v.querySelectorAll("tr[data-id]").forEach(r=>r.onclick=()=>openEdit(r.dataset.id));
+  $("#csv").onclick=exportCSV;
+}
+
+function exportCSV(){
+  const cols=[["name","이름"],["group","그룹"],["relation","관계"],["phone","연락처"],["region","지역"],["status","전달상태"],["method","전달방법"],["visitAt","방문일시"],["visitPlace","방문장소"],["deliveredAt","전달일"],["rsvp","참석여부"],["attended","당일참석"],["companions","동반"],["meals","식권"],["gift","축의금"],["giftMethod","받은방법"],["giftVia","대리전달인"],["pastGiven","내가낸금액"],["thanked","감사인사"],["memo","메모"],["srcMark","원본표시"]];
+  const val=(g,k)=>k==="status"?STATUS[g[k]]:k==="rsvp"?RSVP[g[k]||""]:typeof g[k]==="boolean"?(g[k]?"Y":""):g[k]??"";
+  const csv="\ufeff"+[cols.map(c=>c[1]).join(","),...guests().map(g=>cols.map(([k])=>`"${String(val(g,k)).replace(/"/g,'""')}"`).join(","))].join("\r\n");
+  download(`하객명단_${today()}.csv`,csv,"text/csv");
+}
+
+function vSet(v){
+  const s=S.settings;
+  v.innerHTML=`
+  <h2>예식 정보</h2>
+  <div class="card"><form id="sf" class="grid" onsubmit="return false">
+    <div class="two"><label class="f">예식일<input type="date" name="weddingDate" value="${esc(s.weddingDate)}"></label><label class="f">예식 시간<input type="time" name="weddingTime" value="${esc(s.weddingTime)}"></label></div>
+    <div class="two"><label class="f">신랑(아들) 이름<input name="groom" value="${esc(s.groom)}"></label><label class="f">신부 이름<input name="bride" value="${esc(s.bride)}"></label></div>
+    <div class="two"><label class="f">예식장<input name="venue" value="${esc(s.venue)}"></label><label class="f">주소<input name="venueAddr" value="${esc(s.venueAddr)}"></label></div>
+    <label class="f">모바일 청첩장 주소<input name="invUrl" value="${esc(s.invUrl)}" placeholder="https://"></label>
+    <h2 style="margin:8px 0 0">캘린더·알림</h2>
+    <label class="f">Outlook 웹 주소 (Microsoft 365는 그대로, 사내 Exchange는 OWA 주소)<input name="owaBase" value="${esc(s.owaBase)}"></label>
+    <div class="two"><label class="f">방문 일정 길이(분)<input type="number" name="visitMinutes" value="${esc(s.visitMinutes)}"></label>
+      <label class="f">알림 1 (분 전, 1440=하루)<input type="number" name="alarm1" value="${esc(s.alarm1)}"></label></div>
+    <label class="f">알림 2 (분 전)<input type="number" name="alarm2" value="${esc(s.alarm2)}"></label>
+    <label class="f">초대 문구 ({이름} {신랑} {신부} {일시} {장소} {모바일청첩장})<textarea name="invTpl" rows="5">${esc(s.invTpl)}</textarea></label>
+    <label class="f">감사 문구<textarea name="thanksTpl" rows="3">${esc(s.thanksTpl)}</textarea></label>
+    <div class="row"><button class="btn pri" id="ss">설정 저장</button></div>
+  </form></div>
+  <h2>GitHub 동기화 (휴대폰·PC 공유)</h2>
+  <div class="card grid">
+    ${S.mode==="github"?`<div>연결됨: <b>${esc(ghCfg()?.repo)}</b> · ${GH.state==="err"?`<span style="color:var(--danger)">${esc(GH.err)}</span>`:"마지막 동기화 "+(GH.last||"—")}</div>
+      <div class="row"><button class="btn" id="ghNow">지금 동기화</button><button class="btn" id="ghOff">이 기기 연결 해제</button></div>`
+    :`<div class="note">명단은 비공개 저장소의 data.json에 저장합니다. 토큰은 이 브라우저에만 저장되고, 다른 곳으로 보내지 않습니다.</div>
+      <label class="f">저장소(계정/이름)<input id="ghRepo" value="${esc(ghCfg()?.repo||"maestro4u/wedding-guests-data")}" autocomplete="off"></label>
+      <label class="f">GitHub 토큰(이 저장소만 Contents 읽기·쓰기 권한)<input id="ghTok" type="password" autocomplete="off" placeholder="github_pat_…"></label>
+      <div class="row"><button class="btn pri" id="ghGo">연결</button></div>`}
+  </div>
+  <h2>백업·이동</h2>
+  <div class="card grid">
+    <div class="note">현재 저장 위치: <b>${S.mode==="cloud"?"웹(claude.ai 비공개 페이지) — 여러 기기에서 같은 자료":"이 브라우저 — 다른 기기에서는 보이지 않음"}</b>. 정기적으로 백업 파일을 받아 두세요.</div>
+    <div class="row"><button class="btn" id="bk">백업 파일(JSON) 받기</button><button class="btn" id="rs">백업 파일 가져오기</button><button class="btn" id="cv">엑셀용 CSV 받기</button><button class="btn" id="ms">💐 결혼식 주요일정 .ics</button></div>
+    <div class="row"><button class="btn" id="th">화면 밝기: ${document.documentElement.dataset.theme==="dark"?"어둡게":document.documentElement.dataset.theme==="light"?"밝게":"시스템"}</button></div>
+  </div>`;
+  $("#ss").onclick=async()=>{const fd=new FormData($("#sf"));for(const[k,val]of fd.entries())S.settings[k]=["visitMinutes","alarm1","alarm2"].includes(k)?+val||0:String(val).trim();await putSettings();toast("설정을 저장했습니다");render()};
+  $("#bk").onclick=()=>download(`하객관리_백업_${today()}.json`,JSON.stringify({version:1,exportedAt:new Date().toISOString(),settings:S.settings,guests:guests()},null,1),"application/json");
+  $("#rs").onclick=()=>$("#fileIn").click();
+  const go=$("#ghGo");if(go)go.onclick=async()=>{const repo=$("#ghRepo").value.trim(),token=$("#ghTok").value.trim();
+    if(!/^[\w.-]+\/[\w.-]+$/.test(repo)||!token)return toast("저장소 이름과 토큰을 입력하세요");
+    go.disabled=true;go.textContent="연결 중…";
+    try{await ghConnect({repo,token});toast(`GitHub에 연결했습니다 (${S.guests.size}명)`);render()}catch(e){toast("연결 실패: "+e.message);go.disabled=false;go.textContent="연결"}};
+  const nw=$("#ghNow");if(nw)nw.onclick=async()=>{await ghRefresh(true);if(GH.state!=="err")toast("최신 자료를 받았습니다");vSet(v)};
+  const off=$("#ghOff");if(off)off.onclick=async()=>{if(!(await ask("이 기기의 GitHub 연결을 해제할까요?\n저장소의 자료는 그대로 남습니다.","","해제")))return;
+    try{localStorage.removeItem(GH_KEY)}catch(e){}S.mode="local";GH.state="";render()};$("#cv").onclick=exportCSV;$("#ms").onclick=milestoneICS;
+  $("#th").onclick=()=>{const r=document.documentElement,c=r.dataset.theme,n=!c?"light":c==="light"?"dark":"";n?r.dataset.theme=n:delete r.dataset.theme;try{localStorage.setItem("wedding-theme",n)}catch(e){}vSet(v)};
+}
+$("#fileIn").onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value="";
+  let d;try{d=JSON.parse(await f.text())}catch(err){return toast("백업 파일 형식이 아닙니다")}
+  const list=Array.isArray(d&&d.guests)?d.guests:null,ids=new Set();
+  const bad=!list||!list.length||list.some(g=>!validG(g)||!GROUPS.concat("").includes(g.group??"")||ids.size===ids.add(g.id).size);
+  if(bad)return toast("백업 파일이 올바르지 않아 가져오지 않았습니다");
+  if(!(await ask(`백업의 ${list.length}명으로 현재 명단(${S.guests.size}명)을 바꿀까요?\n현재 명단은 먼저 백업 파일로 저장합니다.`,"","바꾸기")))return;
+  const prev=JSON.stringify({version:1,exportedAt:new Date().toISOString(),settings:S.settings,guests:guests()},null,1);
+  try{localStorage.setItem(LS_KEY+"-prev",prev)}catch(e){}
+  await download(`하객관리_가져오기전_${today()}.json`,prev,"application/json");
+  const next=list.map(g=>norm({...g,group:g.group||"지인"}));
+  try{
+    // 새 자료를 모두 쓴 뒤에만 빠진 사람을 지운다. 중간 실패 시 기존 자료는 남는다.
+    if(S.mode!=="cloud"){const now=new Date().toISOString();for(const id of S.guests.keys())if(!ids.has(id))S.tomb[id]=now;S.guests.clear()}
+    await putMany(next,true);
+    if(S.mode==="cloud"){for(const id of [...S.guests.keys()])if(!ids.has(id)){await S.db.collection("guests").doc(id).delete();S.guests.delete(id)}}
+    S.settings=normSettings(d.settings);
+    S.settings._ts=new Date().toISOString();
+    if(S.mode==="cloud")await S.db.doc("meta/settings").set(S.settings);else afterLocalWrite();
+    toast(`${next.length}명을 가져왔습니다`);
+  }catch(err){toast("가져오기 중 저장 실패: 일부만 반영됐을 수 있습니다. 가져오기 전 백업 파일로 다시 시도하세요")}
+  render()};
+
+/* ───────── 시작 ───────── */
+try{const th=localStorage.getItem("wedding-theme");if(th)document.documentElement.dataset.theme=th}catch(e){}
+document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>{S.view=b.dataset.v;if(b.dataset.v==="list"){}render();scrollTo(0,0)});
+loadLocal();
+if(ghCfg()){S.mode="github";GH.state="sync";ghRefresh(true)}
+render();if(S.mode!=="github")connectCloud();
+setInterval(()=>{if(document.visibilityState==="visible")ghRefresh()},45000);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")ghRefresh()});
+</script>
+</body>
+</html>
